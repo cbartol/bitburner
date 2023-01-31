@@ -156,7 +156,7 @@ function caesarCipher(plaintext, shift) {
       result += " ";
     } else {
       let index = alphabet.indexOf(char.toUpperCase());
-      result += alphabet[mod((index-shift)%alphabet.length)+1];
+      result += alphabet[mod((index-shift),alphabet.length)+1];
     }
   }
   return result;

@@ -1,7 +1,9 @@
-import {crawlServers} from "/scripts/crawler.js"
+import {crawlServers, Server} from "scripts/crawler.js"
+import {NS} from "../index"
 
+'use strict'
 
-function stealFiles(allServers, ns) {
+function stealFiles(allServers:Map<string,Server>, ns:NS) {
     Array.from(allServers.values()).filter(srv => srv.serverName != "home").forEach(srv => {
         let allFiles = ns.ls(srv.serverName).filter(file => file != "tempScript.js" && !file.endsWith(".cct"));
         if(allFiles.length > 0) {
@@ -10,7 +12,7 @@ function stealFiles(allServers, ns) {
     });
 }
 
-function findContracts(allServers, ns) {
+function findContracts(allServers:Map<string,Server>, ns:NS) {
     Array.from(allServers.values()).filter(srv => srv.serverName != "home").forEach(srv => {
         let allFiles = ns.ls(srv.serverName).filter(file => file.endsWith(".cct"));
         if(allFiles.length > 0) {
@@ -21,7 +23,7 @@ function findContracts(allServers, ns) {
 
 
 /** @param {NS} ns */
-export async function main(ns) {
+export async function main(ns:NS) {
     let allServers = crawlServers(ns);
     
     stealFiles(allServers, ns);

@@ -1,13 +1,16 @@
-import {crawlServers} from "/scripts/crawler.js"
+import {crawlServers, Server} from "scripts/crawler.js"
+import {NS} from "../index"
+
+'use strict'
 
 class NodeCost {
-    previousNode; //NodeCost
-    node; //Server
-    cost; //number
-    distance; //number
-    visitedNodes = new Set(); //Set<string>
+    previousNode:NodeCost; //NodeCost
+    node:Server; //Server
+    cost:number; //number
+    distance:number; //number
+    visitedNodes:Set<string> = new Set<string>(); //Set<string>
 
-    constructor(n, d, c, v, p) { //n:Node, d:number, c:number, v:Set<string>, p:NodeCost
+    constructor(n:Server, d:number, c:number, v:Set<string>, p:NodeCost) { //n:Node, d:number, c:number, v:Set<string>, p:NodeCost
         this.node = n;
         this.distance = d;
         this.cost = c;
@@ -16,11 +19,11 @@ class NodeCost {
         this.previousNode = p;
     }
 
-    printPath() {//return :string
+    printPath():string {//return :string
         return (this.previousNode)?this.previousNode.printPath() + ' -> ' + this.node.serverName:this.node.serverName;
     }
 
-    printCommand() {//return :string
+    printCommand():string {//return :string
         return (this.previousNode)?this.previousNode.printCommand() + `connect ${this.node.serverName};`:`connect ${this.node.serverName};`;
     }
 }
@@ -29,23 +32,23 @@ class NodeCost {
 
 
 /** @param {NS} ns */
-export async function main(ns) {
-    let targetName = ns.args[0];
+export async function main(ns:NS) {
+    let targetName:string = <string>ns.args[0];
 	if(targetName == undefined) {
 		ns.tprint("MISSING SERVER ARGUMENT");
         return;
 	}
 
-    let allServers = crawlServers(ns);
+    let allServers:Map<string,Server> = crawlServers(ns);
     //Array.from(allServers.values()).forEach(srv => {
     //    ns.scp("/scripts/findPath.js", srv.serverName, 'home');
     //});
-    let startNode = allServers.get(ns.getHostname());
-    let endNode = allServers.get(targetName);
+    let startNode:Server = allServers.get(ns.getHostname())!;
+    let endNode:Server = allServers.get(targetName)!;
 
-    let processingNodes = [new NodeCost(startNode, 0, 0, new Set(), null)]; //NodeCost[]
+    let processingNodes:NodeCost[] = [new NodeCost(startNode, 0, 0, new Set(), null)]; //NodeCost[]
 
-    let processingNode = processingNodes.shift(); //NodeCost
+    let processingNode:NodeCost = processingNodes.shift(); //NodeCost
     while(processingNode.node != endNode){
         processingNode.node.neighbours.forEach(node => {
             if(!processingNode.visitedNodes.has(node.serverName)) {
@@ -60,7 +63,7 @@ export async function main(ns) {
         processingNode = processingNodes.shift();
     }
     //ns.tprint(processingNode.printCommand());
-    const terminalInput = document.getElementById("terminal-input");
+    const terminalInput:any = document.getElementById("terminal-input");
 
     // Set the value to the command you want to run.
     terminalInput.value=processingNode.printCommand();

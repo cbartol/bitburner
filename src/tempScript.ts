@@ -1,24 +1,27 @@
-/** @param {NS} ns */
+import {NS} from "index"
 
-var maxThreads = 1;
-export async function main(ns) {
-	let serverName = ns.args[0];
+'use strict'
+
+
+var maxThreads:number = 1;
+export async function main(ns:NS) {
+	let serverName:string = <string>ns.args[0];
 	if(serverName == undefined) {
 		serverName = null;
 	}
 	if(ns.args[1] != undefined) {
-		maxThreads = ns.args[1];
+		maxThreads = <number>ns.args[1];
 	}
 
-	let maxMoney = ns.getServerMaxMoney(serverName);
-	let topBoundery = maxMoney * 0.90;
-	let minimumBoundery = maxMoney * 0.60;
-	let minSecLevel = ns.getServerMinSecurityLevel(serverName);
-	let topSecLevel = minSecLevel * 2;
+	let maxMoney:number = ns.getServerMaxMoney(serverName);
+	let topBoundery:number = maxMoney * 0.90;
+	let minimumBoundery:number = maxMoney * 0.60;
+	let minSecLevel:number = ns.getServerMinSecurityLevel(serverName);
+	let topSecLevel:number = minSecLevel * 2;
 	
 	while(true) {
-		let currentMoney = ns.getServerMoneyAvailable(serverName);
-		let currentSecLevel = ns.getServerSecurityLevel(serverName);
+		let currentMoney:number = ns.getServerMoneyAvailable(serverName);
+		let currentSecLevel:number = ns.getServerSecurityLevel(serverName);
 		if(currentSecLevel > topSecLevel) {
 			await lowerSecurity(minSecLevel, serverName, ns);
 		} else if(currentMoney < minimumBoundery) {
@@ -30,21 +33,21 @@ export async function main(ns) {
 }
 
 
-async function lowerSecurity(minLevel, serverName, ns) {
+async function lowerSecurity(minLevel:number, serverName:string, ns:NS) {
 	//while(ns.getServerSecurityLevel(serverName) > minLevel) {
 		let res = await ns.weaken(serverName/*, {threads: maxThreads}*/);
 		ns.print(">> lowering security: " + res);
 	//}
 }
 
-async function growGains(topBoundery, serverName, ns) {
+async function growGains(topBoundery:number, serverName:string, ns:NS) {
 	//while(ns.getServerMoneyAvailable(serverName) < topBoundery) {
 		let res = await ns.grow(serverName/*, , {threads: maxThreads}*/);
 		ns.print(">> growing gains: " + res);
 	//}
 }
 
-async function hackServer(serverName, ns) {
+async function hackServer(serverName:string, ns:NS) {
 	let res = await ns.hack(serverName/*, {threads: maxThreads}*/);
 	ns.print(">> hacking: " + res);
 }

@@ -1,30 +1,33 @@
-/** @param {NS} ns */
-export async function main(ns) {
+import {NS} from "../index"
+
+'use strict'
+
+export async function main(ns:NS) {
     printServers(nukeMain(ns), ns);
 }
 
-const HOME_RESERVED_MEMORY = 50;
+const HOME_RESERVED_MEMORY:number = 50;
 
-export function nukeMain(ns) {
-    let allServers = crawlServers(ns);
+export function nukeMain(ns:NS) {
+    let allServers:Map<string,Server> = crawlServers(ns);
     //printServers(allServers, ns);
-    var toHack = Array.from(allServers.values()).filter((val) => !val.isHacked && val.serverName != 'home');
+    var toHack:Server[] = Array.from(allServers.values()).filter((val) => !val.isHacked && val.serverName != 'home');
     stealFiles(allServers, ns);
     nukeThemAll(toHack, ns);
     return crawlServers(ns);
 }
 
 export class Server {
-    serverName;
-    isHacked = true;
-    linked = []; //string
-    neighbours = []; //Server
-    hackLevel = 1;
-    numPortsRequired = 0;
-    maxRAM = 0;
-    usedRam = 0;
+    serverName:string;
+    isHacked:boolean = true;
+    linked:string[] = []; //string
+    neighbours:Server[] = []; //Server
+    hackLevel:number = 1;
+    numPortsRequired:number = 0;
+    maxRAM:number = 0;
+    usedRam:number = 0;
 
-    constructor(name, ns) {
+    constructor(name:string, ns:NS) {
         this.serverName = name;
         this.isHacked = ns.hasRootAccess(name);
         this.linked = ns.scan(name);
@@ -35,26 +38,25 @@ export class Server {
     }
 }
 
-export function crawlServers(ns) {
-    let s = new Server('home', ns);
+export function crawlServers(ns:NS):Map<string,Server> {
+    let s:Server = new Server('home', ns);
     s.isHacked = true;
-    let allServers = new Map();
+    let allServers:Map<string,Server> = new Map<string,Server>();
     allServers.set('home', s);
     
-    let toVisit = [];
-    let visited = new Set();
-    toVisit.push(s.serverName);
+    let toVisit:string[] = [s.serverName];
+    let visited:Set<string> = new Set<string>();
     
     
     while(toVisit.length > 0) {
-        let currentServer = toVisit.shift();
+        let currentServer:string = toVisit.shift()!;
         //ns.tprint('scanning: ' + currentServer);
-        let scannedServers = ns.scan(currentServer);
+        let scannedServers:string[] = ns.scan(currentServer);
         visited.add(currentServer);
         scannedServers.forEach(el => {
-            let serv;
+            let serv:Server;
             if(visited.has(el)) {
-                serv = allServers.get(el);
+                serv = allServers.get(el)!;
             } else {
                 toVisit.push(el);
                 serv = new Server(el, ns);
@@ -64,18 +66,18 @@ export function crawlServers(ns) {
     }
     Array.from(allServers.values()).forEach(srv => {
         srv.linked.forEach(s => {
-            srv.neighbours.push(allServers.get(s));
+            srv.neighbours.push(allServers.get(s)!);
         });
     });
     return allServers;
 }
 
-function getServerMaxRam(serverName, ns) {
+function getServerMaxRam(serverName:string, ns:NS) {
     return ns.getServerMaxRam(serverName) - ((serverName != "home")?0:HOME_RESERVED_MEMORY);
 }
 
 
-export function printServers(allServers, ns) {
+export function printServers(allServers:Map<string,Server>, ns:NS) {
     let result = "";
 
     const max_col_length =Array.from(allServers.values()).map(el => el.serverName.length).reduce((prev, curr) => (prev>curr)?prev:curr);
@@ -85,7 +87,7 @@ export function printServers(allServers, ns) {
     ns.tprint(result);
 }
 
-function nukeThemAll(toHack, ns) {
+function nukeThemAll(toHack:Server[], ns:NS) {
     toHack.forEach(el => {
         if(el.hackLevel <= ns.getHackingLevel() && el.serverName != "home") {
             var availablePorts = 0; 
@@ -119,7 +121,7 @@ function nukeThemAll(toHack, ns) {
     });
 }
 
-function stealFiles(allServers, ns) {
+function stealFiles(allServers:Map<string,Server>, ns:NS) {
     Array.from(allServers.values()).filter(srv => srv.serverName != "home").forEach(srv => {
         let allFiles = ns.ls(srv.serverName).filter(file => file != "tempScript.js" && !file.endsWith(".cct"));
         //let allFiles = ns.ls(srv.serverName).filter(file => file.endsWith(".cct"));

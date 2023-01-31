@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Build and Launch",
+        "type": "node",
+        "request": "launch",
+        "preLaunchTask": "tsc: watch",
+        "program": "${workspaceFolder}/src/**/*.ts",
+        "outFiles": ["${workspaceFolder}/bin/**/*.js"]
+      }
+    ]
+  }
