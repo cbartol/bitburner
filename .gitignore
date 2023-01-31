@@ -1,0 +1,4 @@
+.vscode/settings.json
+*.xlsx
+alias.txt
+node_modules
