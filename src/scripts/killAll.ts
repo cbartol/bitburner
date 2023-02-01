@@ -1,4 +1,5 @@
-import {crawlServers, Server} from "scripts/crawler.js"
+import {crawlServers} from "scripts/crawler.js"
+import Server from "scripts/server"
 import {NS} from "../index"
 
 'use strict'

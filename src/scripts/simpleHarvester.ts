@@ -1,4 +1,5 @@
-import {nukeMain, Server} from "scripts/crawler.js"
+import {nukeMain} from "scripts/crawler.js"
+import Server from "scripts/server"
 import {NS} from "../index"
 
 'use strict'
