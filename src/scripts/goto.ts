@@ -7,12 +7,10 @@ class NodeCost {
     previousNode:NodeCost; //NodeCost
     node:Server; //Server
     cost:number; //number
-    distance:number; //number
     visitedNodes:Set<string> = new Set<string>(); //Set<string>
 
-    constructor(n:Server, d:number, c:number, v:Set<string>, p:NodeCost) { //n:Node, d:number, c:number, v:Set<string>, p:NodeCost
+    constructor(n:Server, c:number, v:Set<string>, p:NodeCost) { //n:Node, c:number, v:Set<string>, p:NodeCost
         this.node = n;
-        this.distance = d;
         this.cost = c;
         this.visitedNodes = new Set(v);
         this.visitedNodes.add(n.serverName);
@@ -45,14 +43,18 @@ export async function main(ns:NS) {
     //});
     let startNode:Server = allServers.get(ns.getHostname())!;
     let endNode:Server = allServers.get(targetName)!;
+    if(endNode == undefined) {
+        ns.tprint("UNKNOWN SERVER: " + targetName);
+        return;
+    }
 
-    let processingNodes:NodeCost[] = [new NodeCost(startNode, 0, 0, new Set(), null)]; //NodeCost[]
+    let processingNodes:NodeCost[] = [new NodeCost(startNode, 0, new Set(), null)]; //NodeCost[]
 
     let processingNode:NodeCost = processingNodes.shift(); //NodeCost
     while(processingNode.node != endNode){
         processingNode.node.neighbours.forEach(node => {
             if(!processingNode.visitedNodes.has(node.serverName)) {
-                processingNodes.push(new NodeCost(node, processingNode.distance+1, processingNode.distance+1, processingNode.visitedNodes, processingNode));
+                processingNodes.push(new NodeCost(node, processingNode.cost+1, processingNode.visitedNodes, processingNode));
             }
         });
 
