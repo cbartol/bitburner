@@ -166,10 +166,8 @@ function mod(n, m) {
   return ((n % m) + m) % m;
 }
 
-
-
-///////////////////////////////////////////////////////////////////////////////
-//WORKS!!!!!!
+////////////////////////////////////////////////////////////////////////////////
+//Encryption II: Vigenère Cipher -- WORKS!!!!!!
 function vigenereCipher(plaintextKeyword) {
   const plaintext = plaintextKeyword[0].toUpperCase();
   const keyword = plaintextKeyword[1].toUpperCase();
@@ -261,6 +259,26 @@ function countWays(n) {
 }
 //console.log(countWays(55));
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Total Ways to Sum II <---- WORKS!!!
+function countWays2(target, set, index) {
+  if (target === 0) {
+      return 1;
+  }
+  if (target < 0 || index >= set.length) {
+      return 0;
+  }
+  let count = 0;
+  for (let i = 0; i * set[index] <= target; i++) {
+      count += countWays2(target - i * set[index], set, index + 1);
+  }
+  return count;
+}
+
+//const set = [1, 2, 3, 4, 5, 8, 9, 10, 12, 13, 16];
+//const target = 29;
+//console.log(countWays2(target, set, 0));
+
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -285,6 +303,12 @@ function uniquePaths(grid) {
 
 //////-----------------------------------------------------------------------------------------------
 // WORKS!!!
+//chatGPT description of the code:
+//This code calculates the maximum profit that can be made by buying and selling a stock at most "k" times,
+//given an array "prices" representing the price of the stock on each day.
+//The function uses a dynamic programming approach to solve the problem, where "dp" is a 2-dimensional array used to store intermediate results.
+//If "k >= prices.length / 2", the function returns the maximum profit that can be made by performing unlimited transactions.
+
 function maxProfit(k, prices) {
   if (prices.length === 0) return 0;
   if (k >= prices.length / 2) {
@@ -309,6 +333,14 @@ function maxProfit(k, prices) {
 
 //const [k, prices] = [10, [156,40,127,198,63,93,109,190,48]];
 //ns.tprint(maxProfit(k, prices));
+
+
+//-------------------------------------------------------------------------------------
+//Algorithmic Stock Trader II //WORKS!! 
+function maxProfit2(prices) {
+  return maxProfit(prices.length, prices); //by setting "k" with the prices lenght, the function returns the maximum profit that can be made by performing unlimited transactions.
+}
+
 
 
 
@@ -406,10 +438,133 @@ function mergeIntervals(intervals) {
 /// ns.tprint(mergeIntervals([[5,9],[1,4],[14,15],[4,9],[17,19],[17,18],[6,10],[12,20],[17,18],[16,26],[16,17],[16,21],[23,27],[4,12],[11,13],[6,12]]));
 
 
+//-------------------------------------------------------------------------------------
+//Find All Valid Math Expressions <---- WORKS!!
+const addOperators = (digits, target) => {
+  const results = [];
+
+  const dfs = (index, prev, curr, expression) => {
+      if (index === digits.length) {
+          if (curr === target) {
+              results.push(expression);
+          }
+          return;
+      }
+
+      for (let i = index; i < digits.length; i++) {
+          if (i !== index && digits[index] === '0') {
+              break;
+          }
+
+          const num = parseInt(digits.substring(index, i + 1));
+
+          if (index === 0) {
+              dfs(i + 1, num, num, `${num}`);
+          } else {
+              dfs(i + 1, num, curr + num, `${expression}+${num}`);
+              dfs(i + 1, -num, curr - num, `${expression}-${num}`);
+              dfs(i + 1, prev * num, curr - prev + prev * num, `${expression}*${num}`);
+          }
+      }
+  };
+
+  dfs(0, 0, 0, '');
+
+  return "["+results.toString().replace(/\"/g,"").replace(/,/g,", ")+"]";
+};
+
+
+
+//-------------------------------------------------------------------------------------
+//Minimum Path Sum in a Triangle <--- WORKS!!
+function minimumTotal(triangle) {
+  const n = triangle.length;
+  for (let i = n - 2; i >= 0; i--) {
+    for (let j = 0; j <= i; j++) {
+      triangle[i][j] += Math.min(triangle[i + 1][j], triangle[i + 1][j + 1]);
+    }
+  }
+  return triangle[0][0];
+}
+
+
+
+
+
+
+
+
+function getLogo1():string {
+    let output:string = getLogoPoweredBy();
+    output+=" ________  ___  ___  ________  _________  ________  ________  _________   \n";
+    output+="|\\   ____\\|\\  \\|\\  \\|\\   __  \\|\\___   ___\\\\   ____\\|\\   __  \\|\\___   ___\\ \n";
+    output+="\\ \\  \\___|\\ \\  \\\\\\  \\ \\  \\|\\  \\|___ \\  \\_\\ \\  \\___|\\ \\  \\|\\  \\|___ \\  \\_| \n";
+    output+=" \\ \\  \\    \\ \\   __  \\ \\   __  \\   \\ \\  \\ \\ \\  \\  __\\ \\   ____\\   \\ \\  \\  \n";
+    output+="  \\ \\  \\____\\ \\  \\ \\  \\ \\  \\ \\  \\   \\ \\  \\ \\ \\  \\|\\  \\ \\  \\___|    \\ \\  \\ \n";
+    output+="   \\ \\_______\\ \\__\\ \\__\\ \\__\\ \\__\\   \\ \\__\\ \\ \\_______\\ \\__\\        \\ \\__\\\n";
+    output+="    \\|_______|\\|__|\\|__|\\|__|\\|__|    \\|__|  \\|_______|\\|__|         \\|__|\n";
+    output+="\n\n";
+    return output;
+}
+
+function getLogo2():string {
+  let output:string = getLogoPoweredBy();
+  output+="   ██████╗██╗  ██╗ █████╗ ████████╗ ██████╗ ██████╗ ████████╗\n";
+  output+="  ██╔════╝██║  ██║██╔══██╗╚══██╔══╝██╔════╝ ██╔══██╗╚══██╔══╝\n";
+  output+="  ██║     ███████║███████║   ██║   ██║  ███╗██████╔╝   ██║   \n";
+  output+="  ██║     ██╔══██║██╔══██║   ██║   ██║   ██║██╔═══╝    ██║   \n";
+  output+="  ╚██████╗██║  ██║██║  ██║   ██║   ╚██████╔╝██║        ██║   \n";
+  output+="   ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═╝        ╚═╝   \n";
+  output+="\n\n";
+  return output;
+}
+
+function getLogo3():string {
+  let output:string = getLogoPoweredBy();
+  output+="_________ .__            __     _____________________________\n";
+  output+="\\_   ___ \\|  |__ _____ _/  |_  /  _____/\\______   \\__    ___/\n";
+  output+="/    \\  \\/|  |  \\\\__  \\\\   __\\/   \\  ___ |     ___/ |    |   \n";
+  output+="\\     \\___|   Y  \\/ __ \\|  |  \\    \\_\\  \\|    |     |    |   \n";
+  output+=" \\______  /___|  (____  /__|   \\______  /|____|     |____|   \n";
+  output+="        \\/     \\/     \\/              \\/                     \n";
+  output+="\n\n";
+  return output;
+}
+
+function getLogo4():string {
+  let output:string = getLogoPoweredBy();
+  output+="▄████████    ▄█    █▄       ▄████████     ███        ▄██████▄     ▄███████▄     ███     \n";
+  output+="███    ███   ███    ███     ███    ███ ▀█████████▄   ███    ███   ███    ███ ▀█████████▄ \n";
+  output+="███    █▀    ███    ███     ███    ███    ▀███▀▀██   ███    █▀    ███    ███    ▀███▀▀██ \n";
+  output+="███         ▄███▄▄▄▄███▄▄   ███    ███     ███   ▀  ▄███          ███    ███     ███   ▀ \n";
+  output+="███        ▀▀███▀▀▀▀███▀  ▀███████████     ███     ▀▀███ ████▄  ▀█████████▀      ███     \n";
+  output+="███    █▄    ███    ███     ███    ███     ███       ███    ███   ███            ███     \n";
+  output+="███    ███   ███    ███     ███    ███     ███       ███    ███   ███            ███     \n";
+  output+="████████▀    ███    █▀      ███    █▀     ▄████▀     ████████▀   ▄████▀         ▄████▀   \n";
+  output+="\n\n";
+  return output;
+}
+                                                                                         
+function getLogoPoweredBy():string {
+  let output:string = "\n";
+  output+="\t\t     ╰( ͡° ͜ʖ ͡°)つ──☆*:・ﾟ\n"
+  output+="\t\t ..:: ☠️ Powered by ☠️ ::..\n";
+  output+="\n";
+  return output;
+}
+
+
 
 /** @param {NS} ns */
 export async function main(ns) {
-  
-  const input = "YYSPPNNnnnnnnnnnnnnniiHHHHHHHHHHH6QQQQQQQQQQQQQHH5i33iijdBBkkkSSIoFFFFFFFFLLLLLWWWM";
-  ns.tprint(runLengthEncode(input));
+  //All these solutions are powered by chatGPT.
+  let logos:(()=>string)[] = [getLogo1, getLogo2, getLogo3, getLogo4];
+  ns.tprint(logos[((min, max)=> Math.floor(Math.random() * (max - min + 1) + min))(0,logos.length-1)]());
+  //---------------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------------------------------
+
+
+  ns.tprint(maxProfit2([151,34,77,76,118,145,5,172,18,152,134,199,92,137,164,86,167,188,27,163,31,88,182,36,160,154,51,88,132,89,150,110]));
 }
